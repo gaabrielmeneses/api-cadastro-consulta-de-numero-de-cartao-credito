@@ -1,19 +1,19 @@
 # Credit Card API
 
-API REST segura para cadastro e consulta de números de cartão de crédito com **Java 21**, **Spring Boot 3.2** e **Arquitetura Hexagonal**.
+Secure REST API for credit card registration and consultation with **Java 21**, **Spring Boot 3.2** and **Hexagonal Architecture**.
 
-## 🚀 Tecnologias
+## 🚀 Technologies
 
 - Java 21, Spring Boot 3.2, Spring Security, JWT
 - MySQL 8, JPA/Hibernate, HikariCP
 - AES-256-GCM, HMAC-SHA256, BCrypt
 - Docker, Swagger, JUnit 5, Testcontainers
 
-## 🔒 Segurança
+## 🔒 Security
 
-- **Criptografia**: AES-256-GCM para números de cartão
-- **Autenticação**: JWT com expiração de 1 hora
-- **Usuário padrão**: `admin` / `cont1234`
+- **Encryption**: AES-256-GCM for card numbers
+- **Authentication**: JWT with 1-hour expiration
+- **Default user**: `admin` / `cont1234`
 
 ## 📊 Endpoints
 
@@ -22,31 +22,31 @@ API REST segura para cadastro e consulta de números de cartão de crédito com 
 POST /auth/login
 {"username": "admin", "password": "cont1234"}
 
-# Criar cartão
+# Create card
 POST /cards
 Authorization: Bearer <token>
 {"cardNumber": "4532015112830366"}
 
-# Buscar cartão
+# Search card
 GET /cards/{cardNumber}
 Authorization: Bearer <token>
 
-# Upload em lote
+# Batch upload
 POST /cards/batch
 Authorization: Bearer <token>
 Content-Type: multipart/form-data
 ```
 
-## 🏃♂️ Execução
+## 🏃♂️ Execution
 
-### Docker (Recomendado)
+### Docker (Recommended)
 ```bash
 git clone <repository-url>
 cd api-cadastro-consulta-de-numero-de-cartao-credito
 docker-compose up --build
 ```
 
-**Acesso:**
+**Access:**
 - API: http://localhost:8080
 - Swagger: http://localhost:8080/swagger-ui.html
 
@@ -60,41 +60,41 @@ docker run --name mysql8 \
   -e MYSQL_PASSWORD=cont1234 \
   -p 3306:3306 -d mysql:8.0
 
-# 2. Variáveis de ambiente
+# 2. Environment variables
 export SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/creditcard?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
 export SPRING_DATASOURCE_USERNAME=admin
 export SPRING_DATASOURCE_PASSWORD=cont1234
 export SECURITY_JWT_SECRET=mySecretKey123456789012345678901234567890
 export ENCRYPTION_KEY=myEncryptionKey1234567890123456
 
-# 3. Executar
+# 3. Run
 ./mvnw spring-boot:run
 ```
 
-## 🧪 Testes
+## 🧪 Tests
 
 ```bash
-./mvnw test                    # Todos os testes
-./mvnw clean test jacoco:report # Com cobertura
+./mvnw test                    # All tests
+./mvnw clean test jacoco:report # With coverage
 ```
 
-## 📋 Testando com Postman/Insomnia
+## 📋 Testing with Postman/Insomnia
 
-1. **Subir aplicação e banco:**
+1. **Start application and database:**
 ```bash
 docker-compose up --build
 ```
 
-2. **Importar collection:**
-   - Postman: Importar `collection/Credit-Card-API.postman_collection.json`
-   - Insomnia: Importar o mesmo arquivo
+2. **Import collection:**
+   - Postman: Import `collection/Credit-Card-API.postman_collection.json`
+   - Insomnia: Import the same file
 
-3. **Testar endpoints:**
-   - Execute "Login" primeiro para obter o token
-   - O token será automaticamente usado nos outros endpoints
-   - Teste "Create Card", "Get Card" e "Batch Upload"
+3. **Test endpoints:**
+   - Execute "Login" first to get the token
+   - Token will be automatically used in other endpoints
+   - Test "Create Card", "Get Card" and "Batch Upload"
 
-## 📋 Exemplo de Uso (cURL)
+## 📋 Usage Example (cURL)
 
 ```bash
 # Login
@@ -102,13 +102,13 @@ TOKEN=$(curl -s -X POST http://localhost:8080/auth/login \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"cont1234"}' | jq -r '.token')
 
-# Criar cartão
+# Create card
 curl -X POST http://localhost:8080/cards \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"cardNumber":"4532015112830366"}'
 
-# Buscar cartão
+# Search card
 curl -X GET http://localhost:8080/cards/4532015112830366 \
   -H "Authorization: Bearer $TOKEN"
 ```

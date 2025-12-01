@@ -1,15 +1,37 @@
 {
 	"info": {
-		"_postman_id": "099da6c6-6297-4519-ae64-23383b4bda31",
+		"_postman_id": "e562c857-93bf-4884-92dd-96fe201680c9",
 		"name": "Credit-Card-API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "9982670",
-		"_collection_link": "https://lively-sunset-190259.postman.co/workspace/Testes-Endpoints~22e44f9d-f396-4b63-b8ed-83e3385c0ae4/collection/9982670-099da6c6-6297-4519-ae64-23383b4bda31?action=share&source=collection_link&creator=9982670"
+		"_collection_link": "https://lively-sunset-190259.postman.co/workspace/Testes-Endpoints~22e44f9d-f396-4b63-b8ed-83e3385c0ae4/collection/9982670-e562c857-93bf-4884-92dd-96fe201680c9?action=share&source=collection_link&creator=9982670"
 	},
 	"item": [
 		{
-			"name": "http://localhost:8080/api/v1/auth/login",
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    const response = pm.response.json();",
+							"    pm.collectionVariables.set('authToken', response.token);",
+							"    console.log('Token saved:', response.token);",
+							"} else {",
+							"    console.log('Login failed:', pm.response.text());",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "POST",
 				"header": [
 					{
@@ -19,7 +41,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"username\": \"admin\", \"password\": \"admin123\"}",
+					"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin123\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -39,20 +61,15 @@
 						"auth",
 						"login"
 					]
-				},
-				"description": "Generated from cURL: curl -X POST http://localhost:8080/api/v1/auth/login \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"username\": \"admin\", \"password\": \"admin123\"}'\r\n"
+				}
 			},
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/api/v1/cards",
+			"name": "Create Card",
 			"request": {
 				"method": "POST",
 				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer <token>"
-					},
 					{
 						"key": "Content-Type",
 						"value": "application/json"
@@ -60,7 +77,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"cardNumber\": \"4532015112830366\"}",
+					"raw": "{\n    \"cardNumber\": \"4532015112830366\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -79,31 +96,15 @@
 						"v1",
 						"cards"
 					]
-				},
-				"description": "Generated from cURL: curl -X POST http://localhost:8080/api/v1/cards \\\r\n  -H \"Authorization: Bearer <token>\" \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"cardNumber\": \"4532015112830366\"}'\r\n"
+				}
 			},
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/api/v1/cards/4532015112830366",
+			"name": "Get Card",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc2NDYwNjA3MSwiZXhwIjoxNzY0NjA5NjcxfQ.lcHwCjxh8cNXqgcj-1wL1TITGRElAVOIDVCADBm2v-o",
-							"type": "string"
-						}
-					]
-				},
 				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer <token>"
-					}
-				],
+				"header": [],
 				"url": {
 					"raw": "http://localhost:8080/api/v1/cards/4532015112830366",
 					"protocol": "http",
@@ -117,28 +118,22 @@
 						"cards",
 						"4532015112830366"
 					]
-				},
-				"description": "Generated from cURL: curl -X GET http://localhost:8080/api/v1/cards/4532015112830366 \\\r\n  -H \"Authorization: Bearer <token>\"\r\n"
+				}
 			},
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/api/v1/cards/batch",
+			"name": "Batch Upload",
 			"request": {
 				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer <token>"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
 						{
 							"key": "file",
 							"type": "file",
-							"src": "cards.txt"
+							"src": []
 						}
 					]
 				},
@@ -155,10 +150,31 @@
 						"cards",
 						"batch"
 					]
-				},
-				"description": "Generated from cURL: curl -X POST http://localhost:8080/api/v1/cards/batch \\\r\n  -H \"Authorization: Bearer <token>\" \\\r\n  -F \"file=@cards.txt\"\r\n"
+				}
 			},
 			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{authToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "string"
 		}
 	]
 }
