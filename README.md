@@ -78,11 +78,17 @@ Resposta:
 
 ### 3. Dicas Importantes
 
-* **Token é gerenciado automaticamente** pela collection - não precisa copiar manualmente
-* **Token expira em 1 hora** - refaça o login se necessário
-* **Números de cartão são criptografados** no banco de dados
-* **Use o Swagger** ([http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)) para documentação interativa
-* **Verifique logs** com `docker-compose logs app` em caso de erro
+O token é gerenciado automaticamente pela collection — não é necessário copiá-lo manualmente.
+
+O token expira em 1 hora — refaça o login caso seja necessário.
+
+Alguns números de cartão de crédito podem não ser salvos caso não estejam em conformidade com o algoritmo de Luhn, utilizado para validar a estrutura do cartão.
+
+Os números de cartão são criptografados no banco de dados.
+
+Utilize o Swagger (http://localhost:8080/swagger-ui.html) para explorar a documentação interativa.
+
+Em caso de erros, consulte os logs com: docker-compose logs app.
 
 ## 📌 Exemplos (cURL)
 
