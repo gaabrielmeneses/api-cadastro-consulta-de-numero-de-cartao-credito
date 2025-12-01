@@ -24,9 +24,7 @@ GET  /cards/{num}   # Consultar cartão
 POST /cards/batch   # Upload em lote (multipart/form-data)
 ```
 
-## 🏃 Execução
-
-### Via Docker (recomendado)
+## 🏃 Execução via Docker
 
 ```bash
 git clone <repository-url>
@@ -39,34 +37,7 @@ docker-compose up --build
 * API: [http://localhost:8080](http://localhost:8080)
 * Swagger: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 
-### Execução Local
-
-1. **Subir MySQL**
-
-```bash
-docker run --name mysql8 \
-  -e MYSQL_ROOT_PASSWORD=cont1234 \
-  -e MYSQL_DATABASE=creditcard \
-  -e MYSQL_USER=admin \
-  -e MYSQL_PASSWORD=cont1234 \
-  -p 3306:3306 -d mysql:8
-```
-
-2. **Variáveis de ambiente**
-
-```bash
-export SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/creditcard
-export SPRING_DATASOURCE_USERNAME=admin
-export SPRING_DATASOURCE_PASSWORD=cont1234
-export SECURITY_JWT_SECRET=mySecretKey123456789012345678901234567890
-export ENCRYPTION_KEY=myEncryptionKey1234567890123456
-```
-
-3. **Rodar**
-
-```bash
-./mvnw spring-boot:run
-```
+**Aguarde alguns segundos** para que o MySQL inicialize completamente antes de testar os endpoints.
 
 ## 🧪 Testes
 
@@ -88,14 +59,37 @@ curl -X POST http://localhost:8080/cards/batch \
 Resposta:
 
 ```json
-{ "processedCards": 2 }
+{ "processedCards": 0 }
 ```
 
-## 📬 Postman / Insomnia
+## 📬 Testando com Postman
 
-* Suba o ambiente com `docker-compose up --build`
+### 1. Preparação
+
+* Suba o ambiente: `docker-compose up --build`
 * Importe a collection: `collection/Credit-Card-API.postman_collection.json`
-* Execute “Login” e teste os demais endpoints
+* Aguarde a aplicação estar disponível em [http://localhost:8080](http://localhost:8080)
+
+### 2. Fluxo de Teste
+
+**Passo 1: Fazer Login**
+* Execute o request "Login" na collection
+* O token será automaticamente capturado e configurado para os demais requests
+
+**Passo 2: Testar Endpoints**
+* Execute "Criar Cartão" para cadastrar um novo cartão
+* Execute "Consultar Cartão" para buscar o cartão criado
+* Execute "Upload em Lote" para testar o upload de arquivo
+
+**Observação:** A collection já está configurada com scripts que capturam o token automaticamente após o login e o aplicam nos headers dos demais requests.
+
+### 3. Dicas Importantes
+
+* **Token é gerenciado automaticamente** pela collection - não precisa copiar manualmente
+* **Token expira em 1 hora** - refaça o login se necessário
+* **Números de cartão são criptografados** no banco de dados
+* **Use o Swagger** ([http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)) para documentação interativa
+* **Verifique logs** com `docker-compose logs app` em caso de erro
 
 ## 📌 Exemplos (cURL)
 
@@ -119,4 +113,3 @@ curl -X POST http://localhost:8080/cards/batch \
   -H "Authorization: Bearer $TOKEN" \
   -F "file=@cards.txt"
 ```
-
