@@ -18,7 +18,6 @@ import java.util.Optional;
 public class CardRepositoryImpl implements CardRepository {
 
     private final CardJpaRepository jpaRepository;
-    private final CardMapper cardMapper;
     private final EncryptionUseCase encryptionUseCase;
 
     @Override
