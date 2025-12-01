@@ -59,7 +59,7 @@ curl -X POST http://localhost:8080/cards/batch \
 Resposta:
 
 ```json
-{ "processedCards": 2 }
+{ "processedCards": 0 }
 ```
 
 ## 📬 Testando com Postman
@@ -73,57 +73,19 @@ Resposta:
 ### 2. Fluxo de Teste
 
 **Passo 1: Fazer Login**
-```http
-POST http://localhost:8080/auth/login
-Content-Type: application/json
+* Execute o request "Login" na collection
+* O token será automaticamente capturado e configurado para os demais requests
 
-{
-  "username": "admin",
-  "password": "admin123"
-}
-```
+**Passo 2: Testar Endpoints**
+* Execute "Criar Cartão" para cadastrar um novo cartão
+* Execute "Consultar Cartão" para buscar o cartão criado
+* Execute "Upload em Lote" para testar o upload de arquivo
 
-**Resposta esperada:**
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "type": "Bearer",
-  "expiresIn": 3600
-}
-```
-
-**Passo 2: Copiar o Token**
-* Copie o valor do campo `token` da resposta
-* Configure o header `Authorization: Bearer <token>` nos próximos requests
-
-**Passo 3: Criar Cartão**
-```http
-POST http://localhost:8080/cards
-Authorization: Bearer <seu-token>
-Content-Type: application/json
-
-{
-  "cardNumber": "4532015112830366"
-}
-```
-
-**Passo 4: Consultar Cartão**
-```http
-GET http://localhost:8080/cards/4532015112830366
-Authorization: Bearer <seu-token>
-```
-
-**Passo 5: Upload em Lote**
-```http
-POST http://localhost:8080/cards/batch
-Authorization: Bearer <seu-token>
-Content-Type: multipart/form-data
-
-# Anexar arquivo cards.txt com números de cartão (um por linha)
-```
+**Observação:** A collection já está configurada com scripts que capturam o token automaticamente após o login e o aplicam nos headers dos demais requests.
 
 ### 3. Dicas Importantes
 
+* **Token é gerenciado automaticamente** pela collection - não precisa copiar manualmente
 * **Token expira em 1 hora** - refaça o login se necessário
 * **Números de cartão são criptografados** no banco de dados
 * **Use o Swagger** ([http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)) para documentação interativa
