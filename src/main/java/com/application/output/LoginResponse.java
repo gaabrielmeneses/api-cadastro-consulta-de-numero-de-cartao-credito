@@ -1,9 +1,17 @@
 package com.application.output;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Schema(description = "Login response containing JWT token")
-public record LoginResponse(
-    @Schema(description = "JWT access token", example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
-    String token
-) {}
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Builder
+public class LoginResponse{
+
+    String token;
+
+}

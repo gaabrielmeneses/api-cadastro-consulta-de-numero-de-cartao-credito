@@ -1,6 +1,7 @@
 package com.domain.adapters;
 
 import com.domain.ports.usecase.EncryptionUseCase;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 @Service
+@AllArgsConstructor
 public class EncryptionUseCaseImpl implements EncryptionUseCase {
     
     private static final String AES_ALGORITHM = "AES";

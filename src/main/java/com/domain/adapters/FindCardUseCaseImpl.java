@@ -1,16 +1,19 @@
 package com.domain.adapters;
 
+import com.domain.dto.Card;
 import com.domain.exceptions.CardNotFoundException;
 import com.domain.ports.repository.CardRepository;
-import com.domain.dto.Card;
-import com.domain.dto.CardNumber;
+import com.domain.ports.usecase.FindCardUseCase;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
-public class FindCardUseCaseImpl {
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class FindCardUseCaseImpl implements FindCardUseCase {
+
     private final CardRepository cardRepository;
-
-    public FindCardUseCaseImpl(CardRepository cardRepository) {
-        this.cardRepository = cardRepository;
-    }
 
     public Card execute(String cardNumber) {
         CardNumber validCardNumber = CardNumber.of(cardNumber);

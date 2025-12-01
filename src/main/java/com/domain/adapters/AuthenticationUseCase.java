@@ -1,6 +1,7 @@
-package com.infrastructure.configuration.auth;
+package com.domain.adapters;
 
 import com.domain.dto.User;
+import com.infrastructure.configuration.auth.JwtTokenService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

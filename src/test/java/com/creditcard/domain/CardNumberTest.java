@@ -1,6 +1,5 @@
 package com.creditcard.domain;
 
-import com.domain.dto.CardNumber;
 import com.domain.exceptions.DomainException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

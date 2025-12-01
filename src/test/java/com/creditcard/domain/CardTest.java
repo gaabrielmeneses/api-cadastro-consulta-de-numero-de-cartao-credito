@@ -1,8 +1,6 @@
 package com.creditcard.domain;
 
 import com.domain.dto.Card;
-import com.domain.dto.CardId;
-import com.domain.dto.CardNumber;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

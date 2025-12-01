@@ -1,7 +1,6 @@
 package com.domain.ports.repository;
 
 import com.domain.dto.Card;
-import com.domain.dto.CardNumber;
 
 import java.util.List;
 import java.util.Optional;

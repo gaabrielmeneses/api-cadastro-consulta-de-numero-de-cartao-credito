@@ -1,9 +1,16 @@
 package com.application.output;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Schema(description = "Response for batch card creation")
-public record BatchResponse(
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Builder
+public class  BatchResponse {
     @Schema(description = "Number of cards processed", example = "1500")
-    int cardsProcessed
-) {}
+    int cardsProcessed;
+}

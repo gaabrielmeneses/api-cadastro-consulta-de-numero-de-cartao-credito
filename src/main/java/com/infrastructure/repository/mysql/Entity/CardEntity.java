@@ -21,10 +21,6 @@ public class CardEntity {
     @Column(name = "card_hash", nullable = false, length = 64, unique = true)
     private String cardHash;
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
     protected CardEntity() {}
 
     public CardEntity(UUID id, String encryptedCardNumber, String cardHash) {
@@ -45,7 +41,4 @@ public class CardEntity {
         return cardHash;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
 }

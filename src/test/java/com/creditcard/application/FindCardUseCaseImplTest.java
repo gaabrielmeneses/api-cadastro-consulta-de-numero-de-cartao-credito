@@ -3,7 +3,6 @@ package com.creditcard.application;
 import com.domain.adapters.FindCardUseCaseImpl;
 import com.domain.dto.Card;
 import com.domain.exceptions.CardNotFoundException;
-import com.domain.dto.CardNumber;
 import com.domain.ports.repository.CardRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

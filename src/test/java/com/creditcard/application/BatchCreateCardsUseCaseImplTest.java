@@ -3,7 +3,6 @@ package com.creditcard.application;
 import com.domain.adapters.BatchCreateCardsUseCaseImpl;
 import com.domain.dto.Card;
 import com.domain.ports.repository.CardRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -14,9 +13,10 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class BatchCreateCardsUseCaseImplTest {
@@ -25,11 +25,6 @@ class BatchCreateCardsUseCaseImplTest {
     private CardRepository cardRepository;
 
     private BatchCreateCardsUseCaseImpl batchCreateCardsUseCaseImpl;
-
-    @BeforeEach
-    void setUp() {
-        batchCreateCardsUseCaseImpl = new BatchCreateCardsUseCaseImpl(cardRepository);
-    }
 
     @Test
     void shouldProcessStructuredFileFormat() {

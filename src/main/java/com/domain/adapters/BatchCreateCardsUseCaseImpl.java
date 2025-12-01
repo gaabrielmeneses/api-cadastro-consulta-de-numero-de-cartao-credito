@@ -1,10 +1,13 @@
 package com.domain.adapters;
 
-import com.domain.ports.repository.CardRepository;
 import com.domain.dto.Card;
-import com.domain.dto.CardNumber;
+import com.domain.ports.repository.CardRepository;
+import com.domain.ports.usecase.BatchCreateCardsUseCase;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -12,15 +15,14 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BatchCreateCardsUseCaseImpl {
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class BatchCreateCardsUseCaseImpl implements BatchCreateCardsUseCase {
     private static final Logger logger = LoggerFactory.getLogger(BatchCreateCardsUseCaseImpl.class);
     private static final int BATCH_SIZE = 1000;
     
     private final CardRepository cardRepository;
-
-    public BatchCreateCardsUseCaseImpl(CardRepository cardRepository) {
-        this.cardRepository = cardRepository;
-    }
 
     public int execute(InputStream inputStream) {
         int totalProcessed = 0;

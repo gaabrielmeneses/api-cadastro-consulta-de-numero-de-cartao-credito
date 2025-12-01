@@ -1,15 +1,20 @@
 package com.domain.adapters;
 
-import com.domain.ports.repository.CardRepository;
 import com.domain.dto.Card;
-import com.domain.dto.CardNumber;
+import com.domain.ports.repository.CardRepository;
+import com.domain.ports.usecase.CreateCardUseCase;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
-public class CreateCardUseCaseImpl {
+@Service
+@RequiredArgsConstructor
+@Slf4j
+@AllArgsConstructor
+public class CreateCardUseCaseImpl implements CreateCardUseCase {
+
     private final CardRepository cardRepository;
-
-    public CreateCardUseCaseImpl(CardRepository cardRepository) {
-        this.cardRepository = cardRepository;
-    }
 
     public Card execute(String cardNumber) {
         CardNumber validCardNumber = CardNumber.of(cardNumber);
