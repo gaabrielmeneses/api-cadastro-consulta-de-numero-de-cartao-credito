@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 @Tag(name = "Authentication", description = "Authentication operations")
 @AllArgsConstructor
 @Slf4j
@@ -26,17 +26,21 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "Authenticate user", description = "Authenticates user and returns JWT token")
-    public ResponseEntity<LoginResponse> log(@Valid @RequestBody LoginRequest request) {
-        MDC.put("operation", "login");
-        MDC.put("username", request.username());
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        try {
+            MDC.put("operation", "login");
+            MDC.put("username", request.getUsername());
 
-        log.info("User authentication attempt");
+            log.info("User authentication attempt");
 
-        String token = authenticationUseCase.execute(request.username(), request.password());
-        LoginResponse response = new LoginResponse(token);
+            String token = authenticationUseCase.execute(request.getUsername(), request.getPassword());
+            LoginResponse response = new LoginResponse(token);
 
-        log.info("User authenticated successfully");
+            log.info("User authenticated successfully");
 
-        return ResponseEntity.ok(response);
+            return ResponseEntity.ok(response);
+        } finally {
+            MDC.clear();
+        }
     }
 }

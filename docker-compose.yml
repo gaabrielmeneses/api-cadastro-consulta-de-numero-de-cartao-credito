@@ -12,5 +12,25 @@ services:
     volumes:
       - ./data/mysql:/var/lib/mysql
       - ./mysql/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
-
+  app:
+    build: .
+    container_name: creditcard-api
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: creditcard
+      DB_USERNAME: admin
+      DB_PASSWORD: cont1234
+      JWT_SECRET: mySecretKey123456789012345678901234567890
+      ENCRYPTION_KEY: myEncryptionKey1234567890123456
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class  BatchResponse {
-    @Schema(description = "Number of cards processed", example = "1500")
+
     int cardsProcessed;
+
 }

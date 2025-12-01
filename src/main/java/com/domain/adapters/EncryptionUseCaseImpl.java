@@ -14,7 +14,6 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 @Service
-@AllArgsConstructor
 public class EncryptionUseCaseImpl implements EncryptionUseCase {
     
     private static final String AES_ALGORITHM = "AES";
@@ -29,13 +28,11 @@ public class EncryptionUseCaseImpl implements EncryptionUseCase {
 
     public EncryptionUseCaseImpl(@Value("${encryption.key}") String key) {
         byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
-        
-        // Use first 32 bytes for AES-256
+
         byte[] aesKeyBytes = new byte[32];
         System.arraycopy(keyBytes, 0, aesKeyBytes, 0, Math.min(keyBytes.length, 32));
         this.encryptionKey = new SecretKeySpec(aesKeyBytes, AES_ALGORITHM);
-        
-        // Use key for HMAC
+
         this.hmacKey = new SecretKeySpec(keyBytes, HMAC_ALGORITHM);
         this.secureRandom = new SecureRandom();
     }
@@ -67,8 +64,7 @@ public class EncryptionUseCaseImpl implements EncryptionUseCase {
     public String decrypt(String encryptedText) {
         try {
             byte[] encryptedWithIv = Base64.getDecoder().decode(encryptedText);
-            
-            // Extract IV and encrypted data
+
             byte[] iv = new byte[GCM_IV_LENGTH];
             byte[] encryptedData = new byte[encryptedWithIv.length - GCM_IV_LENGTH];
             System.arraycopy(encryptedWithIv, 0, iv, 0, iv.length);

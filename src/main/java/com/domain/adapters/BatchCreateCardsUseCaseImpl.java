@@ -1,12 +1,11 @@
 package com.domain.adapters;
 
 import com.domain.dto.Card;
+import com.domain.dto.CardNumber;
 import com.domain.ports.repository.CardRepository;
 import com.domain.ports.usecase.BatchCreateCardsUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -19,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class BatchCreateCardsUseCaseImpl implements BatchCreateCardsUseCase {
-    private static final Logger logger = LoggerFactory.getLogger(BatchCreateCardsUseCaseImpl.class);
     private static final int BATCH_SIZE = 1000;
     
     private final CardRepository cardRepository;
@@ -33,26 +31,29 @@ public class BatchCreateCardsUseCaseImpl implements BatchCreateCardsUseCase {
             boolean isFirstLine = true;
             
             while ((line = reader.readLine()) != null) {
-                String trimmedLine = line.trim();
+                // Process lines with exact length of 51 characters
+                if (line.length() < 51) {
+                    line = String.format("%-51s", line); // Pad with spaces to 51 chars
+                }
                 
-                if (trimmedLine.isEmpty()) continue;
-                
-                // Skip header line
+                // Skip header line (first line)
                 if (isFirstLine) {
                     isFirstLine = false;
+                    log.debug("Skipping header: {}", maskLine(line));
                     continue;
                 }
                 
                 // Skip footer line (starts with "LOTE")
-                if (trimmedLine.startsWith("LOTE")) {
+                if (line.startsWith("LOTE")) {
+                    log.debug("Skipping footer: {}", maskLine(line));
                     continue;
                 }
                 
                 // Process card lines (start with "C")
-                if (trimmedLine.startsWith("C")) {
+                if (line.startsWith("C")) {
                     try {
-                        String cardNumber = extractCardNumber(trimmedLine);
-                        if (cardNumber != null) {
+                        String cardNumber = extractCardNumber(line);
+                        if (cardNumber != null && !cardNumber.isEmpty()) {
                             CardNumber validCardNumber = CardNumber.of(cardNumber);
                             Card card = Card.create(validCardNumber);
                             batch.add(card);
@@ -60,12 +61,12 @@ public class BatchCreateCardsUseCaseImpl implements BatchCreateCardsUseCase {
                             if (batch.size() >= BATCH_SIZE) {
                                 cardRepository.saveAll(batch);
                                 totalProcessed += batch.size();
-                                logger.info("Processed batch of {} cards. Total: {}", batch.size(), totalProcessed);
+                                log.info("Processed batch of {} cards. Total: {}", batch.size(), totalProcessed);
                                 batch.clear();
                             }
                         }
                     } catch (Exception e) {
-                        logger.warn("Invalid card number on line: {}", trimmedLine, e);
+                        log.warn("Invalid card number on line: {}", maskLine(line), e);
                     }
                 }
             }
@@ -73,11 +74,11 @@ public class BatchCreateCardsUseCaseImpl implements BatchCreateCardsUseCase {
             if (!batch.isEmpty()) {
                 cardRepository.saveAll(batch);
                 totalProcessed += batch.size();
-                logger.info("Processed final batch of {} cards. Total: {}", batch.size(), totalProcessed);
+                log.info("Processed final batch of {} cards. Total: {}", batch.size(), totalProcessed);
             }
             
         } catch (Exception e) {
-            logger.error("Error processing batch file", e);
+            log.error("Error processing batch file", e);
             throw new RuntimeException("Error processing batch file", e);
         }
 
@@ -90,6 +91,16 @@ public class BatchCreateCardsUseCaseImpl implements BatchCreateCardsUseCase {
         // Extract card number from position 8-26 (0-based: 7-25)
         String cardNumber = line.substring(7, Math.min(26, line.length())).trim();
         
-        return cardNumber.isEmpty() ? null : cardNumber;
+        // Validate card number format (must be 13-19 digits)
+        if (cardNumber.matches("\\d{13,19}")) {
+            return cardNumber;
+        }
+        
+        return null;
+    }
+    
+    private String maskLine(String line) {
+        if (line.length() < 26) return line;
+        return line.substring(0, 7) + "*".repeat(Math.min(19, line.length() - 7));
     }
 }

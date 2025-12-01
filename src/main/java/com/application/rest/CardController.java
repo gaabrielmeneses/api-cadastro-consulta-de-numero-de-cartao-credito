@@ -12,8 +12,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,12 +28,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/cards")
+@RequestMapping("/api/v1/cards")
 @Tag(name = "Cards", description = "Credit card management operations")
 @SecurityRequirement(name = "bearerAuth")
 @AllArgsConstructor
+@Slf4j
 public class CardController {
-    private static final Logger logger = LoggerFactory.getLogger(CardController.class);
     
     private final CreateCardUseCase createCardUseCase;
     private final FindCardUseCase findCardUseCase;
@@ -44,14 +43,14 @@ public class CardController {
     @Operation(summary = "Create a new credit card", description = "Creates a new credit card with validation")
     public ResponseEntity<CardResponse> createCard(@Valid @RequestBody CreateCardRequest request) {
         MDC.put("operation", "createCard");
-        MDC.put("cardNumber", maskCardNumber(request.cardNumber()));
+        MDC.put("cardNumber", maskCardNumber(request.getCardNumber()));
         
-        logger.info("Creating new card");
+        log.info("Creating new card");
         
-        Card card = createCardUseCase.execute(request.cardNumber());
+        Card card = createCardUseCase.execute(request.getCardNumber());
         CardResponse response = new CardResponse(card.getId().getValue());
         
-        logger.info("Card created successfully with ID: {}", card.getId());
+        log.info("Card created successfully with ID: {}", card.getId());
         
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -62,12 +61,12 @@ public class CardController {
         MDC.put("operation", "findCard");
         MDC.put("cardNumber", maskCardNumber(cardNumber));
         
-        logger.info("Finding card");
+        log.info("Finding card");
         
         Card card = findCardUseCase.execute(cardNumber);
         CardResponse response = new CardResponse(card.getId().getValue());
-        
-        logger.info("Card found with ID: {}", card.getId());
+
+        log.info("Card found with ID: {}", card.getId());
         
         return ResponseEntity.ok(response);
     }
@@ -77,18 +76,18 @@ public class CardController {
     public ResponseEntity<BatchResponse> batchCreateCards(@RequestParam("file") MultipartFile file) {
         MDC.put("operation", "batchCreateCards");
         MDC.put("fileName", file.getOriginalFilename());
-        
-        logger.info("Processing batch file with {} bytes", file.getSize());
+
+        log.info("Processing batch file with {} bytes", file.getSize());
         
         try {
             int processed = batchCreateCardsUseCase.execute(file.getInputStream());
             BatchResponse response = new BatchResponse(processed);
-            
-            logger.info("Batch processing completed. Cards processed: {}", processed);
+
+            log.info("Batch processing completed. Cards processed: {}", processed);
             
             return ResponseEntity.ok(response);
         } catch (IOException e) {
-            logger.error("Error reading batch file", e);
+            log.error("Error reading batch file", e);
             throw new RuntimeException("Error reading batch file", e);
         }
     }

@@ -16,8 +16,7 @@ public class FindCardUseCaseImpl implements FindCardUseCase {
     private final CardRepository cardRepository;
 
     public Card execute(String cardNumber) {
-        CardNumber validCardNumber = CardNumber.of(cardNumber);
-        return cardRepository.findByCardNumber(validCardNumber)
+        return cardRepository.findByCardNumber(cardNumber)
                 .orElseThrow(() -> new CardNotFoundException(cardNumber));
     }
 }

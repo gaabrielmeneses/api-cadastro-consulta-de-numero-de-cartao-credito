@@ -19,6 +19,7 @@ public class CardRepositoryImpl implements CardRepository {
 
     private final CardJpaRepository jpaRepository;
     private final EncryptionUseCase encryptionUseCase;
+    private final CardMapper cardMapper;
 
     @Override
     public Card save(Card card) {
@@ -36,8 +37,8 @@ public class CardRepositoryImpl implements CardRepository {
     }
 
     @Override
-    public Optional<Card> findByCardNumber(CardNumber cardNumber) {
-        String cardHash = encryptionUseCase.hash(cardNumber.getValue());
+    public Optional<Card> findByCardNumber(String cardNumber) {
+        String cardHash = encryptionUseCase.hash(cardNumber);
         
         return jpaRepository.findByCardHash(cardHash)
                 .map(entity -> {
