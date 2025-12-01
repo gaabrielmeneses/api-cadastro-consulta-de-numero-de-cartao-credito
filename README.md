@@ -24,9 +24,7 @@ GET  /cards/{num}   # Consultar cartão
 POST /cards/batch   # Upload em lote (multipart/form-data)
 ```
 
-## 🏃 Execução
-
-### Via Docker (recomendado)
+## 🏃 Execução via Docker
 
 ```bash
 git clone <repository-url>
@@ -39,34 +37,7 @@ docker-compose up --build
 * API: [http://localhost:8080](http://localhost:8080)
 * Swagger: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 
-### Execução Local
-
-1. **Subir MySQL**
-
-```bash
-docker run --name mysql8 \
-  -e MYSQL_ROOT_PASSWORD=cont1234 \
-  -e MYSQL_DATABASE=creditcard \
-  -e MYSQL_USER=admin \
-  -e MYSQL_PASSWORD=cont1234 \
-  -p 3306:3306 -d mysql:8
-```
-
-2. **Variáveis de ambiente**
-
-```bash
-export SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/creditcard
-export SPRING_DATASOURCE_USERNAME=admin
-export SPRING_DATASOURCE_PASSWORD=cont1234
-export SECURITY_JWT_SECRET=mySecretKey123456789012345678901234567890
-export ENCRYPTION_KEY=myEncryptionKey1234567890123456
-```
-
-3. **Rodar**
-
-```bash
-./mvnw spring-boot:run
-```
+**Aguarde alguns segundos** para que o MySQL inicialize completamente antes de testar os endpoints.
 
 ## 🧪 Testes
 
@@ -91,11 +62,72 @@ Resposta:
 { "processedCards": 2 }
 ```
 
-## 📬 Postman / Insomnia
+## 📬 Testando com Postman
 
-* Suba o ambiente com `docker-compose up --build`
+### 1. Preparação
+
+* Suba o ambiente: `docker-compose up --build`
 * Importe a collection: `collection/Credit-Card-API.postman_collection.json`
-* Execute “Login” e teste os demais endpoints
+* Aguarde a aplicação estar disponível em [http://localhost:8080](http://localhost:8080)
+
+### 2. Fluxo de Teste
+
+**Passo 1: Fazer Login**
+```http
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+```
+
+**Resposta esperada:**
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "type": "Bearer",
+  "expiresIn": 3600
+}
+```
+
+**Passo 2: Copiar o Token**
+* Copie o valor do campo `token` da resposta
+* Configure o header `Authorization: Bearer <token>` nos próximos requests
+
+**Passo 3: Criar Cartão**
+```http
+POST http://localhost:8080/cards
+Authorization: Bearer <seu-token>
+Content-Type: application/json
+
+{
+  "cardNumber": "4532015112830366"
+}
+```
+
+**Passo 4: Consultar Cartão**
+```http
+GET http://localhost:8080/cards/4532015112830366
+Authorization: Bearer <seu-token>
+```
+
+**Passo 5: Upload em Lote**
+```http
+POST http://localhost:8080/cards/batch
+Authorization: Bearer <seu-token>
+Content-Type: multipart/form-data
+
+# Anexar arquivo cards.txt com números de cartão (um por linha)
+```
+
+### 3. Dicas Importantes
+
+* **Token expira em 1 hora** - refaça o login se necessário
+* **Números de cartão são criptografados** no banco de dados
+* **Use o Swagger** ([http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)) para documentação interativa
+* **Verifique logs** com `docker-compose logs app` em caso de erro
 
 ## 📌 Exemplos (cURL)
 
@@ -119,4 +151,3 @@ curl -X POST http://localhost:8080/cards/batch \
   -H "Authorization: Bearer $TOKEN" \
   -F "file=@cards.txt"
 ```
-
