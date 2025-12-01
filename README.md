@@ -77,15 +77,6 @@ export ENCRYPTION_KEY=myEncryptionKey1234567890123456
 
 ## 📁 Upload em Lote (Batch)
 
-Formato posicional esperado:
-
-```
-DESAFIO-HYPERATIVA           20180524LOTE0001000010
-C1     4456897999999999
-C2     4456897922969999
-LOTE0001000010
-```
-
 Exemplo:
 
 ```bash
