@@ -39,13 +39,6 @@ docker-compose up --build
 
 **Aguarde alguns segundos** para que o MySQL inicialize completamente antes de testar os endpoints.
 
-## 🧪 Testes
-
-```bash
-./mvnw test
-./mvnw clean test jacoco:report
-```
-
 ## 📁 Upload em Lote (Batch)
 
 Exemplo:
